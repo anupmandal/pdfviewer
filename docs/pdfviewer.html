@@ -36,14 +36,15 @@ body {
 
 .iframe-wrapper {
     position: relative;
-    width: 80%;
-    height: 80%;
+    width: calc(80% - 20px); /* Adjust width to account for margin */
+    height: calc(80% - 20px); /* Adjust height to account for margin */
     background-color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: center;
     align-items: center;
     transition: all 0.3s ease;
+    margin: 10px; /* Add margin */
 }
 
 .close-button {
@@ -79,8 +80,8 @@ iframe {
 
 @media (max-width: 768px) {
     .iframe-wrapper {
-        height: 50% !important;
-        width: 90% !important;
+        height: calc(50% - 20px) !important;
+        width: calc(90% - 20px) !important;
     }
 
     .close-button {
@@ -94,7 +95,7 @@ iframe {
 
 @media (max-width: 480px) {
     .iframe-wrapper {
-        height: 50% !important;
+        height: calc(60% - 20px) !important;
     }
 
     .close-button {
