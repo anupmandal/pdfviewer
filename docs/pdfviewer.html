@@ -48,14 +48,14 @@ body {
 
 .close-button {
     position: absolute;
-    top: -18px;  /* Adjusted for larger button */
-    right: -18px;  /* Adjusted for larger button */
-    width: 35px;  /* Increased from 30px */
-    height: 35px;  /* Increased from 30px */
-    background: rgba(255, 255, 255, 0.5);  /* More visible background */
+    top: -18px;
+    right: -18px;
+    width: 35px;
+    height: 35px;
+    background: rgba(255, 255, 255, 0.5);
     border: none;
     cursor: pointer;
-    font-size: 28px;  /* Increased from 24px */
+    font-size: 28px;
     color: black;
     border-radius: 50%;
     display: flex;
@@ -81,17 +81,24 @@ iframe {
     }
     
     .close-button {
-        top: -15px;  /* Adjusted for mobile */
-        right: -15px;  /* Adjusted for mobile */
-        width: 30px;  /* Increased from 25px */
-        height: 30px;  /* Increased from 25px */
-        font-size: 24px;  /* Increased from 20px */
+        top: -18px;  /* Increased from -15px */
+        right: -18px;  /* Increased from -15px */
+        width: 36px;  /* 30px + 20% = 36px */
+        height: 36px;  /* 30px + 20% = 36px */
+        font-size: 29px;  /* 24px + 20% = 28.8px (~29px) */
     }
 }
 
 @media (max-width: 480px) {
     .iframe-wrapper {
         height: 60% !important;
+    }
+    .close-button {
+        top: -18px;
+        right: -18px;
+        width: 36px;
+        height: 36px;
+        font-size: 29px;
     }
 }
 </style>
@@ -121,7 +128,6 @@ iframe {
         document.getElementById('pdfFrame').src = "";
     }
 
-    // Optional: Close modal when clicking outside
     document.getElementById('iframeContainer').addEventListener('click', function(e) {
         if(e.target === this) closePreview();
     });
