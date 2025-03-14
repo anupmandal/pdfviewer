@@ -1,133 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fruit Matching Game - Ugadi Special</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #fffae6;
-            margin: 0;
-            padding: 20px;
-        }
+<title>Ad Preview</title>
+<style>
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
 
-        h1 {
-            color: #ff9800;
-        }
+#previewButton {
+    padding: 15px 30px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
 
-        #game-board {
-            display: grid;
-            grid-template-columns: repeat(4, 100px);
-            gap: 10px;
-            justify-content: center;
-            margin-top: 20px;
-        }
+.iframe-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
 
-        .card {
-            width: 100px;
-            height: 100px;
-            background-color: #ffeb3b;
-            border-radius: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-        }
+.iframe-wrapper {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
 
-        .card.flipped {
-            background-color: #fff;
-        }
+.close-button {
+    position: absolute;
+    top: -18px;
+    right: -18px;
+    width: 35px;
+    height: 35px;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    font-size: 28px;
+    color: black;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s ease;
+}
 
-        .card.matched {
-            background-color: #c8e6c9;
-            cursor: default;
-        }
+.close-button:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
 
-        #status {
-            margin-top: 20px;
-            font-size: 20px;
-            color: #388e3c;
-        }
-    </style>
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .iframe-wrapper {
+        height: 50% !important;
+        width: 90% !important;
+    }
+    
+    .close-button {
+        top: -18px;  /* Increased from -15px */
+        right: -18px;  /* Increased from -15px */
+        width: 36px;  /* 30px + 20% = 36px */
+        height: 36px;  /* 30px + 20% = 36px */
+        font-size: 29px;  /* 24px + 20% = 28.8px (~29px) */
+    }
+}
+
+@media (max-width: 480px) {
+    .iframe-wrapper {
+        height: 60% !important;
+    }
+    .close-button {
+        top: -18px;
+        right: -18px;
+        width: 36px;
+        height: 36px;
+        font-size: 29px;
+    }
+}
+</style>
 </head>
 <body>
 
-<h1>Ugadi Fruit Matching Game</h1>
-<div id="game-board"></div>
-<p id="status"></p>
+<button id="previewButton">Ad Preview</button>
+
+<div id="iframeContainer" class="iframe-container">
+    <div class="iframe-wrapper">
+        <button class="close-button" onclick="closePreview()">×</button>
+        <iframe id="pdfFrame" src=""></iframe>
+    </div>
+</div>
 
 <script>
-    const fruits = [
-        '🍎', '🍎', '🍌', '🍌', 
-        '🍇', '🍇', '🍉', '🍉',
-        '🍍', '🍍', '🥭', '🥭',
-        '🍒', '🍒', '🍑', '🍑'
-    ];
+    const fileId = "1vpY9tlaIlcGNXTM8BEQhjjONAla-pr5h";
+    const viewerUrl = `https://drive.google.com/file/d/${fileId}/preview#view=fitH`;
 
-    let openedCards = [];
-    let matchedCards = [];
-    const gameBoard = document.getElementById('game-board');
-    const status = document.getElementById('status');
+    document.getElementById('previewButton').addEventListener('click', function() {
+        document.getElementById('pdfFrame').src = viewerUrl;
+        document.getElementById('iframeContainer').style.display = 'flex';
+    });
 
-    // Shuffle the fruits randomly
-    function shuffle(array) {
-        array.sort(() => Math.random() - 0.5);
+    function closePreview() {
+        document.getElementById('iframeContainer').style.display = 'none';
+        document.getElementById('pdfFrame').src = "";
     }
 
-    // Create game board with shuffled fruits
-    function createBoard() {
-        shuffle(fruits);
-        gameBoard.innerHTML = '';
-        fruits.forEach(fruit => {
-            const card = document.createElement('div');
-            card.classList.add('card');
-            card.dataset.fruit = fruit;
-            card.innerHTML = `<span style="display:none">${fruit}</span>`;
-            card.addEventListener('click', flipCard);
-            gameBoard.appendChild(card);
-        });
-    }
-
-    // Flip the card when clicked
-    function flipCard() {
-        if (openedCards.length < 2 && !this.classList.contains('flipped') && !this.classList.contains('matched')) {
-            this.classList.add('flipped');
-            this.firstChild.style.display = 'block';
-            openedCards.push(this);
-
-            if (openedCards.length === 2) {
-                setTimeout(checkMatch, 500);
-            }
-        }
-    }
-
-    // Check if two opened cards match
-    function checkMatch() {
-        const [card1, card2] = openedCards;
-        if (card1.dataset.fruit === card2.dataset.fruit) {
-            card1.classList.add('matched');
-            card2.classList.add('matched');
-            matchedCards.push(card1, card2);
-            status.textContent = 'Good job! It’s a match!';
-            if (matchedCards.length === fruits.length) {
-                status.textContent = '🎉 Congratulations! You matched all the fruits! 🎉';
-            }
-        } else {
-            card1.classList.remove('flipped');
-            card2.classList.remove('flipped');
-            card1.firstChild.style.display = 'none';
-            card2.firstChild.style.display = 'none';
-            status.textContent = 'Try again!';
-        }
-        openedCards = [];
-    }
-
-    // Initialize the game board
-    createBoard();
+    document.getElementById('iframeContainer').addEventListener('click', function(e) {
+        if(e.target === this) closePreview();
+    });
 </script>
 
 </body>
