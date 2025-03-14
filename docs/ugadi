@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fruit Matching Game - Ugadi Special</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #fffae6;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #ff9800;
+        }
+
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .card {
+            width: 100px;
+            height: 100px;
+            background-color: #ffeb3b;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            user-select: none;
+            transition: transform 0.3s;
+        }
+
+        .card.flipped {
+            background-color: #fff;
+            transform: scale(1.1);
+        }
+
+        .card.matched {
+            background-color: #c8e6c9;
+            cursor: default;
+        }
+
+        .card.mismatch {
+            background-color: #ffcdd2;
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 20px;
+            color: #388e3c;
+        }
+
+        #restart {
+            padding: 10px 20px;
+            background-color: #388e3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #restart:hover {
+            background-color: #2e7d32;
+        }
+
+        @media (max-width: 600px) {
+            #game-board {
+                grid-template-columns: repeat(4, 80px);
+            }
+            .card {
+                width: 80px;
+                height: 80px;
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Ugadi Fruit Matching Game</h1>
+    <div id="game-board"></div>
+    <p id="status"></p>
+    <p id="moves">Moves: 0</p>
+    <button id="restart">New Game</button>
+
+<script>
+    const fruits = [
+        '🍎', '🍎', '🍌', '🍌', 
+        '🍇', '🍇', '🍉', '🍉',
+        '🍍', '🍍', '🥭', '🥭',
+        '🍒', '🍒', '🍑', '🍑'
+    ];
+
+    const fruitLabels = {
+        '🍎': 'Apple',
+        '🍌': 'Banana',
+        '🍇': 'Grapes',
+        '🍉': 'Watermelon',
+        '🍍': 'Pineapple',
+        '🥭': 'Mango',
+        '🍒': 'Cherry',
+        '🍑': 'Peach'
+    };
+
+    let openedCards = [];
+    let matchedCards = [];
+    let moves = 0;
+    let isProcessing = false;
+    const gameBoard = document.getElementById('game-board');
+    const status = document.getElementById('status');
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function createBoard() {
+        shuffle(fruits);
+        gameBoard.innerHTML = '';
+        fruits.forEach(fruit => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.fruit = fruit;
+            card.setAttribute('aria-label', fruitLabels[fruit]);
+            card.innerHTML = <span style="display: none">${fruit}</span>;
+            card.addEventListener('click', flipCard);
+            gameBoard.appendChild(card);
+        });
+    }
+
+    function flipCard() {
+        if (isProcessing || openedCards.length >= 2 || 
+            this.classList.contains('flipped') || 
+            this.classList.contains('matched')) return;
+
+        this.classList.add('flipped');
+        this.firstChild.style.display = 'block';
+        openedCards.push(this);
+
+        if (openedCards.length === 2) {
+            isProcessing = true;
+            setTimeout(checkMatch, 500);
+        }
+    }
+
+    function checkMatch() {
+        const [card1, card2] = openedCards;
+        moves++;
+        document.getElementById('moves').textContent = Moves: ${moves};
+
+        if (card1.dataset.fruit === card2.dataset.fruit) {
+            card1.classList.add('matched');
+            card2.classList.add('matched');
+            matchedCards.push(card1, card2);
+            status.textContent = 'Good job! It’s a match!';
+            
+            if (matchedCards.length === fruits.length) {
+                status.textContent = 'Congratulations! You matched all the fruits!';
+            }
+            openedCards = [];
+            isProcessing = false;
+        } else {
+            card1.classList.add('mismatch');
+            card2.classList.add('mismatch');
+            setTimeout(() => {
+                card1.classList.remove('flipped', 'mismatch');
+                card2.classList.remove('flipped', 'mismatch');
+                card1.firstChild.style.display = 'none';
+                card2.firstChild.style.display = 'none';
+                openedCards = [];
+                isProcessing = false;
+                status.textContent = 'Try again!';
+            }, 500);
+        }
+    }
+
+    document.getElementById('restart').addEventListener('click', () => {
+        openedCards = [];
+        matchedCards = [];
+        moves = 0;
+        document.getElementById('moves').textContent = 'Moves: 0';
+        status.textContent = '';
+        isProcessing = false;
+        createBoard();
+    });
+
+    createBoard();
+</script>
+</body>
+</html>
