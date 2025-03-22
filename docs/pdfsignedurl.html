@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ad Preview</title>
+<style>
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+#previewButton {
+    padding: 15px 30px;
+    font-size: 18px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.iframe-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.iframe-wrapper {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.close-button {
+    position: absolute;
+    top: -18px;
+    right: -18px;
+    width: 35px;
+    height: 35px;
+    background: rgba(255, 255, 255, 0.5);
+    border: none;
+    cursor: pointer;
+    font-size: 28px;
+    color: black;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s ease;
+}
+
+.close-button:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+@media (max-width: 768px) {
+    .iframe-wrapper {
+        height: 50% !important;
+        width: 90% !important;
+    }
+    
+    .close-button {
+        top: -18px;  /* Increased from -15px */
+        right: -18px;  /* Increased from -15px */
+        width: 36px;  /* 30px + 20% = 36px */
+        height: 36px;  /* 30px + 20% = 36px */
+        font-size: 29px;  /* 24px + 20% = 28.8px (~29px) */
+    }
+}
+
+@media (max-width: 480px) {
+    .iframe-wrapper {
+        height: 60% !important;
+    }
+    .close-button {
+        top: -18px;
+        right: -18px;
+        width: 36px;
+        height: 36px;
+        font-size: 29px;
+    }
+}
+</style>
+</head>
+<body>
+
+<button id="previewButton">Ad Preview</button>
+
+<div id="iframeContainer" class="iframe-container">
+    <div class="iframe-wrapper">
+        <button class="close-button" onclick="closePreview()">×</button>
+        <iframe id="pdfFrame" src=""></iframe>
+    </div>
+</div>
+
+<script>
+    const fileId = "1vpY9tlaIlcGNXTM8BEQhjjONAla-pr5h";
+    const viewerUrl = `https://dhclassified-dev.s3.ap-south-1.amazonaws.com/generatePDF/NhHSYgsu_CNU.pdf?X-Amz-Expires=144000&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA2U5CPGXUPRMCXKPE%2F20250322%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250322T032811Z&X-Amz-SignedHeaders=host&X-Amz-Signature=c467a1da7872933aa90df92c1dc2c21b4a5e6b8ba1a612d3fc75bc4d34790348
+#view=fitH`;
+
+    document.getElementById('previewButton').addEventListener('click', function() {
+        document.getElementById('pdfFrame').src = viewerUrl;
+        document.getElementById('iframeContainer').style.display = 'flex';
+    });
+
+    function closePreview() {
+        document.getElementById('iframeContainer').style.display = 'none';
+        document.getElementById('pdfFrame').src = "";
+    }
+
+    document.getElementById('iframeContainer').addEventListener('click', function(e) {
+        if(e.target === this) closePreview();
+    });
+</script>
+
+</body>
+</html>
